@@ -1,0 +1,181 @@
+blurt 1.0 readme
+================
+
+A very minimalist blogging tool by Matthijs de Jonge (matthijs@rommelhok.com)
+
+REQUIREMENTS:
+=============
+
+blurt is a CGI script written in Perl. To use it, you need to have
+access to a web server where you can run Perl CGI scripts.
+
+blurt was written for Unix. It'll probably work without any problems
+on servers running Linux, FreeBSD and MacOS X. It might work on
+Windows but I haven't tried.
+
+INSTALL:
+========
+
+Change some settings in the index.cgi file. Specifically, you'll want
+to set the number of posts you want to show on one page ($NumPosts),
+the directory where blurt resides on your web server (eg
+/home/users/yourname/blurt) and the URL to your blog (eg.
+http://www.example.com/blurt).
+
+NOTE: if the URL to your blog isn't simply http://www.example.com
+(without an extra directory), you need to uncomment the line that
+reads "our $BlogPath = $BasePath."/index.cgi" and you need to comment
+out the line below it that reads "our $BlogPath = $BasePath.
+
+"comment out" means to add a # sign to the beginning of the line.
+"uncomment" means to remove the # sign at the beginning of the line
+
+NOTE: if the path to Perl on your web server isn't /usr/bin/perl
+(it usually is) you'll need to change the line at the top of the blurt
+index.cgi file that reads #!/usr/bin/perl 
+
+USE:
+====
+
+Simply upload text files to the posts directory.  The first line in
+your text file is used as the post title. The date the file was last
+modified (the last time it was uploaded, say) is used as the post
+date. Posts get sorted by post date in reverse order. Using $PrevLink
+and $NextLink (see the section on variables below) you can navigate to
+older posts.
+
+If you create subdirectories in the posts directory, these are assumed
+to be categories. For example you can have a subdirectory
+posts/musings where you store all your personal musings and a
+subdirectory posts/stories where you store short stories.
+
+Once you have a setup like that, you can do:
+http://www.yourserver/musings and get a blog of only your musings and
+http://www.yourserver/stories to get a blog containing only your short
+stories
+
+blurt also allows you to browse your posts by date. You simply do this
+by appending the year, the month number and the day to the URL (month
+and day numbers need to be two digits, with a leading zero if
+necessary). It's not necessary to supply a month and a day. 
+
+For example:
+
+http://www.yourserver/stories/2005 will show all short stories you've
+uploaded in 2005
+
+http://www.yourserver/2005/04 will show all posts you've made in
+April 2005
+
+http://www.yourserver/2005/08/12 will show all posts in all categories
+that were uploaded on August 12th 2005.
+
+Finally, you can surf directly to a given post. If, for example, you
+have a short story story.txt which you've stored in the stories
+subdirectory, you do:
+
+http://www.yourserver/stories/story.html
+
+(yes, that's story.html because we want to show story.txt in html
+flavor).
+
+
+No matter which URL you use to get at a given post or group of posts,
+there'll always be a $PrevLink and a $NextLink available which
+automatically figure out what the next and previous pages will be
+given the restrictions (category or date) in the URL. If you request
+an individual post, blurt will provide links to the previous and next
+posts within the same category as the requested post.
+
+TEMPLATES:
+==========
+
+By default your blurt blog looks incredibly ugly. That's because you
+haven't edited your templates yet. Find them in the templates
+subdirectory.
+
+For every "flavor" you'll have installed, there's a file head.flavor
+that holds everything that goes before your posts, a file foot.flavor
+that holds everything that goes after it and a file story.flavor that
+holds the markup of an individual post.
+
+By default, blurt only comes with two flavors: HTML and RSS. If you
+install additional plugins, additional flavors may become available.
+If you install the Comments plugin, for example, you'll have to add
+template files for the "comments" flavor (head.comments, foot.comments
+and story.comments).
+
+VARIABLES:
+==========
+
+The dynamic content of your blog (such as your post data) gets added
+to your templates by adding variables. For example, to display a post
+title in the html flavor, you add $Title to your story.html file.
+
+Here's a list of all variables available in a stock blurt install (if
+you install any plugins, additional variables will become availabe):
+
+$PageNum: the number of the current page
+$PrevLink: the url of the previous page
+$NextLink: the url of the next page
+
+These variables are available in story templates for individual posts:
+
+$Title : the title of your post 
+$PostContent : the content of your post
+$PostYear : the year your post was made
+$PostMonth : the month your post was made
+$PostDay : the day your post was made
+$PostID : the "ID" of your post: basically the filename. useful for
+generating anchors
+$PostPath : the path to your post (category/postfile)
+
+There's also some variables with have to do with the inner workings of
+blurt. In principle, these are available in your templates, but really
+there isn't any good reason to use them there. They're primarily
+useful if you're developing your own plugins.
+
+$NumPosts : the number of posts shown on one page
+$BaseDir : the directory on your server where blurt is installed, eg.
+/home/users/yourname/blurt
+$BasePath : the url to your blog
+$BlogPath : the url to your blurt index.cgi. Will be identical to
+$BasePath if you've installed blurt in te server root
+$LogLevel : this variable is used for debugging purposes
+$TemplatesDir : the directory on your server where templates are kept
+$PluginsDir : the directory on your server where plugins are kept
+$DefaultFlavor : the default flavor if none is specified. it's html
+$DefaultHeader : the content-type string blurt sends out. 
+$Output : this variable holds all the text and html blurt sends out to
+the client
+$QueryVars : a reference to a hash that holds the query variables
+we've been sent.
+$RequestURI : the request URI. 
+$Flavor : the current flavor
+
+PLUGINS:
+========
+
+By itself, blurt doesn't do very much besides show posts in various
+interesting ways. To make it do more, you'll need to install plugins.
+These are .pm files that go in the plugins subdirectory of your blurt
+install. Plugins add extra variables to your templates. They can also
+provide additional template flavors.
+
+Installing them is dead simple. Read the Readme that came with the
+plugin and do what it says. At the very least you'll have to upload a
+.pm file to the plugins directory.
+
+If the plugin you need doesn't exist, you can write it yourself if you
+know some Perl. Just take a look at an existing plugin to figure out
+how it's done - it's not difficult at all.
+
+If you've written a plugin, send me an email (matthijs@rommelhok.com)
+and I'll include a link to it on the blurt site.
+
+LICENSE:
+========
+
+blurt 1.0 is public domain software. that means you can do with it
+whatever you want: install it, modify it, sell it, whatever. I really
+don't care.

@@ -1,0 +1,10 @@
+<item>
+  <title>$Title</title>
+  <link>$BlogPath/$PostPath/$PostID.html</link>
+  <description><![CDATA[
+    
+    $PostContent
+    
+    ]]></description>
+</item>
+ 
